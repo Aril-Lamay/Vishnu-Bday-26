@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case File: Birthday Investigation</title>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-display: 'Cabinet Grotesk', 'Trebuchet MS', system-ui, sans-serif;
+      --font-body: 'Satoshi', 'Segoe UI', system-ui, sans-serif;
+
+      /* Dark crime palette but still a bit playful */
+      --bg: #09080b;
+      --bg-mid: #141218;
+      --red-main: #ff2c4a;
+      --red-deep: #89101e;
+      --accent-teal: #a4e1e6;
+      --accent-soft: #f3eef7;
+      --accent-muted: #b1a7c0;
+
+      --card-bg: #141218;
+      --card-border: #24212b;
+      --card-shadow: 0 26px 60px rgba(0, 0, 0, 0.75);
+
+      --radius-panel: 1.5rem;
+      --radius-chip: 999px;
+
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      -webkit-text-size-adjust: none;
+      text-size-adjust: none;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: var(--font-body);
+      color: var(--accent-soft);
+      padding: var(--space-8) var(--space-4) var(--space-8);
+      background:
+        radial-gradient(circle at 0 0, rgba(255,44,74,0.22), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(164,225,230,0.16), transparent 55%),
+        radial-gradient(circle at 80% 0, rgba(136,16,30,0.55), transparent 58%),
+        #050408;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: var(--space-6) var(--space-3);
+      }
+    }
+
+    .page {
+      max-width: 1000px;
+      margin-inline: auto;
+      position: relative;
+    }
+
+    /* Subtle film grain + splatters */
+    .texture {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      mix-blend-mode: screen;
+      opacity: 0.3;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,0.12) 0, transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.07) 0, transparent 50%),
+        radial-gradient(circle at 40% 0%, rgba(255,255,255,0.05) 0, transparent 55%);
+      z-index: 0;
+    }
+
+    /* Main screen styled like the reference: left big title, right red panel */
+    .main-shell {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: var(--space-6);
+      padding: var(--space-6);
+      border-radius: 1.8rem;
+      background:
+        linear-gradient(135deg, rgba(255,44,74,0.18), transparent 35%),
+        linear-gradient(-135deg, rgba(164,225,230,0.08), transparent 40%),
+        var(--card-bg);
+      border: 1.5px solid #222029;
+      box-shadow: var(--card-shadow);
+    }
+
+    @media (max-width: 860px) {
+      .main-shell {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* Fake top nav like a landing page */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-5);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-muted);
+    }
+
+    .nav-brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    /* New progress chip instead of fake tabs */
+    .progress-chip {
+      padding: 0.3rem 0.8rem;
+      border-radius: var(--radius-chip);
+      border: 1px solid rgba(164,225,230,0.6);
+      background: rgba(16,32,36,0.85);
+      color: var(--accent-teal);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.1rem;
+    }
+
+    .nav-link {
+      position: relative;
+      padding-bottom: 0.15rem;
+    }
+
+    .nav-link span {
+      cursor: default;
+    }
+
+    .nav-link.active span {
+      color: var(--accent-soft);
+    }
+
+    .nav-link.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.15rem;
+      width: 100%;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--red-main);
+    }
+
+    /* LEFT COLUMN – text & puzzles */
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .eyebrow-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: var(--radius-chip);
+      border: 1px solid rgba(255,44,74,0.4);
+      background: rgba(255,44,74,0.12);
+      color: var(--red-main);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4.3vw, 2.9rem);
+      line-height: 1;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-subtitle {
+      font-size: 0.95rem;
+      color: var(--accent-muted);
+      max-width: 28rem;
+      margin-top: var(--space-2);
+    }
+
+    .puzzle-note {
+      font-size: 0.82rem;
+      color: var(--accent-soft);
+      opacity: 0.8;
+    }
+
+    .puzzle-cards {
+      display: grid;
+      gap: var(--space-3);
+      margin-top: var(--space-3);
+    }
+
+    .puzzle-card {
+      border-radius: 1.1rem;
+      border: 1px solid #26212e;
+      background: radial-gradient(circle at 0 0, rgba(255,44,74,0.18), transparent 60%),
+                  radial-gradient(circle at 100% 100%, rgba(164,225,230,0.16), transparent 60%),
+                  #141118;
+      padding: var(--space-4);
+    }
+
+    .puzzle-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+      font-size: 0.8rem;
+    }
+
+    .puzzle-label {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-soft);
+    }
+
+    .puzzle-tag {
+      padding: 0.15rem 0.65rem;
+      border-radius: var(--radius-chip);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid rgba(164,225,230,0.5);
+      color: var(--accent-teal);
+      background: rgba(15,32,36,0.6);
+    }
+
+    .puzzle-question {
+      font-size: 0.9rem;
+      color: var(--accent-soft);
+      margin-bottom: 0.6rem;
+    }
+
+    .puzzle-input-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .puzzle-input-row input {
+      flex: 1 1 140px;
+      min-width: 0;
+      border-radius: 0.8rem;
+      border: 1.5px solid #2d2637;
+      padding: 0.5rem 0.8rem;
+      background: #0b0910;
+      color: var(--accent-soft);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    .puzzle-input-row input::placeholder {
+      color: #73667f;
+    }
+
+    .puzzle-input-row input:focus-visible {
+      border-color: var(--accent-teal);
+      background: #09060f;
+      box-shadow: 0 0 0 2px rgba(164,225,230,0.38);
+    }
+
+    .puzzle-hint {
+      margin-top: 0.3rem;
+      font-size: 0.75rem;
+      color: #8f7fb0;
+    }
+
+    .status-pill {
+      margin-top: 0.4rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-chip);
+      border: 1px solid transparent;
+      font-size: 0.75rem;
+      color: #c3b7e4;
+    }
+
+    .status-pill.correct {
+      border-color: rgba(120,244,187,0.7);
+      color: #78f4bb;
+      background: rgba(7,88,55,0.4);
+    }
+    .status-pill.incorrect {
+      border-color: rgba(255,142,142,0.75);
+      color: #ffbcbc;
+      background: rgba(88,18,30,0.55);
+    }
+
+    /* RIGHT COLUMN – red panel + unlock button */
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      justify-content: space-between;
+    }
+
+    .crime-panel {
+      border-radius: 1.4rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(255,255,255,0.15), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(0,0,0,0.4), transparent 70%),
+        linear-gradient(140deg, #ff2c4a, #4a050e);
+      border: 2px solid #4a050e;
+      box-shadow: 0 18px 48px rgba(0,0,0,0.85);
+      padding: var(--space-4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .crime-frame {
+      margin-top: var(--space-2);
+      border-radius: 0.9rem;
+      border: 2px solid #f6dede;
+      background:
+        radial-gradient(circle at 20% 0, rgba(0,0,0,0.7), transparent 65%),
+        radial-gradient(circle at 80% 100%, rgba(0,0,0,0.85), transparent 60%),
+        linear-gradient(135deg, #b31222, #300106);
+      aspect-ratio: 4 / 3;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* “Shadowy” figure vibe without being graphic */
+    .crime-silhouette {
+      position: absolute;
+      inset: 5% 25% 10% 10%;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(0,0,0,0.7), transparent 55%),
+        radial-gradient(circle at 60% 40%, rgba(0,0,0,0.75), transparent 65%),
+        radial-gradient(circle at 80% 90%, rgba(0,0,0,0.8), transparent 60%);
+      filter: blur(2px);
+      opacity: 0.9;
+      transform: skewX(-8deg);
+    }
+
+    .crime-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #f6dede;
+    }
+
+    .crime-text {
+      margin-top: 0.4rem;
+      font-size: 0.85rem;
+      color: #f0c7cb;
+    }
+
+    .unlock-panel {
+      border-radius: 1.1rem;
+      border: 1px dashed rgba(164,225,230,0.45);
+      padding: var(--space-4);
+      background: linear-gradient(135deg, rgba(16,32,36,0.9), rgba(9,10,18,0.98));
+    }
+
+    .unlock-title {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .unlock-note {
+      font-size: 0.87rem;
+      color: var(--accent-soft);
+      margin-bottom: var(--space-3);
+    }
+
+    .unlock-btn {
+      width: 100%;
+      border-radius: 1.1rem;
+      border: none;
+      padding: 0.8rem 1.2rem;
+      background: linear-gradient(135deg, var(--red-main), var(--accent-teal));
+      color: #050309;
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      box-shadow: 0 18px 35px rgba(0,0,0,0.9);
+      transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+    }
+
+    .unlock-btn[disabled] {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+      filter: grayscale(0.3);
+    }
+
+    .unlock-btn:not([disabled]):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 22px 42px rgba(0,0,0,1);
+      filter: brightness(1.03);
+    }
+
+    .unlock-hint {
+      margin-top: 0.4rem;
+      font-size: 0.78rem;
+      color: var(--accent-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="texture"></div>
+
+    <section class="main-shell">
+      <header class="top-nav">
+        <div class="nav-brand">CASE FILE // BIRTHDAY MYSTERY</div>
+        <div class="progress-chip" id="progress-chip">
+          <!--- ->>Clues solved: 0 / 3<-->
+        </div>
+      </header>
+
+      <!-- LEFT: TITLE + PUZZLES -->
+      <div class="left-column">
+        <div>
+          <div class="eyebrow-chip">Case 202 · Birthday mystery</div>
+          <h1 class="hero-title">CRIME SCENE: BIRTHDAY SURPRISE</h1>
+          <p class="hero-subtitle">
+            Somewhere past this investigation room, a pastel, adorable birthday world is
+            waiting. But first, Mr. Bondman, you need to prove you know what really
+            happened tonight.
+          </p>
+        </div>
+
+        <p class="puzzle-note">
+          Solve all three clues below. When each one glows green, you’ll unlock the
+          button that takes you to the real birthday page.
+        </p>
+
+        <div class="puzzle-cards">
+          <!-- Puzzle 1 -->
+          <article class="puzzle-card" data-puzzle="1">
+            <div class="puzzle-header-row">
+              <span class="puzzle-label">Clue 1 · Evidence on the table</span>
+              <span class="puzzle-tag">basic</span>
+            </div>
+            <p class="puzzle-question">
+              A killer leaves the only clue - a single line:
+              <br>
+              "13 • 1 • 14 • 7 • 15"
+              <br>
+              What is the murder weapon?
+            </p>
+            <div class="puzzle-input-row">
+              <input
+                id="answer-1"
+                type="text"
+                placeholder="one word"
+                autocomplete="off"
+              />
+            </div>
+            <p class="puzzle-hint">Hint: Cipher master you are na? Solve.</p>
+            <div class="status-pill" id="status-1">Waiting for your answer…</div>
+          </article>
+
+          <!-- Puzzle 2 -->
+          <article class="puzzle-card" data-puzzle="2">
+            <div class="puzzle-header-row">
+              <span class="puzzle-label">Clue 2 · Time of the incident</span>
+              <span class="puzzle-tag">medium</span>
+            </div>
+            <p class="puzzle-question">
+              The detective finds a second note beside the body:
+              <br>
+              "We mingled four times. The first was magic. The second went by like a flash and third was a warm echo. But the fourth came back like a ghost - wearing the exact same face as the first, maybe even more otherworldier than the first, and that's what gave me the strength again."
+              <br>
+              What was the event?
+            </p>
+            <div class="puzzle-input-row">
+              <input
+                id="answer-2"
+                type="text"
+                placeholder="You can figure it out."
+                autocomplete="off"
+              />
+            </div>
+            <p class="puzzle-hint">Hint: think of when people shout</p>
+            <div class="status-pill" id="status-2">Waiting for your answer…</div>
+          </article>
+
+          <!-- Puzzle 3 -->
+          <article class="puzzle-card" data-puzzle="3">
+            <div class="puzzle-header-row">
+              <span class="puzzle-label">Clue 3 · The mastermind</span>
+              <span class="puzzle-tag">twist</span>
+            </div>
+            <p class="puzzle-question">
+              The Final Cipher
+              The detective finds the killer's name etched into the victim's palm — but scrambled beyond recognition:
+              CTGLG
+              "Unravel me three times and you'll find the one who was always there. The one who never should have been."
+              Who is the killer?
+            </p>
+            <div class="puzzle-input-row">
+              <input
+                id="answer-3"
+                type="text"
+                placeholder="who planned it?"
+                autocomplete="off"
+              />
+            </div>
+            <p class="puzzle-hint">Hint: You know 2 of the 3 methods (ciphers) .</p>
+            <div class="status-pill" id="status-3">Waiting for your answer…</div>
+          </article>
+        </div>
+      </div>
+
+      <!-- RIGHT: RED PANEL + UNLOCK -->
+
+        <div class="unlock-panel" style="margin-top: -500px; height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+          <div class="unlock-title">Access control</div>
+          <p class="unlock-note">
+            When every clue above is correct, you’ll be cleared to enter the real
+            birthday world—bright, pastel, and absolutely not a crime scene.
+          </p>
+
+          <button class="unlock-btn" id="unlock-btn" disabled>
+            🔓 Proceed to birthday page
+          </button>
+          <p class="unlock-hint" id="unlock-hint">
+            Solve all three clues. Green = correct, red = try again.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      const answers = {
+        1: function (value) {
+          const v = (value || '').trim().toLowerCase();
+          return v === 'mango' || v === 'vishnu';
+        },
+        2: function (value) {
+          const v = (value || '').trim().toLowerCase();
+          return v === 'farewell' || v === 'vishnu';
+        },
+        3: function (value) {
+          const v = (value || '').trim().toLowerCase();
+          return v === 'avane' || v === 'voldemort' || v === 'vishnu';
+        }
+      };
+
+      const fields = [
+        document.getElementById('answer-1'),
+        document.getElementById('answer-2'),
+        document.getElementById('answer-3')
+      ];
+
+      const statusEls = {
+        1: document.getElementById('status-1'),
+        2: document.getElementById('status-2'),
+        3: document.getElementById('status-3')
+      };
+
+      const unlockBtn = document.getElementById('unlock-btn');
+      const unlockHint = document.getElementById('unlock-hint');
+
+      checkAll();
+      
+
+      function setStatus(id, state) {
+        const el = statusEls[id];
+        if (!el) return;
+
+        el.classList.remove('correct', 'incorrect');
+
+        const value = fields[id - 1].value.trim();
+        if (!value) {
+          el.textContent = 'Waiting for your answer…';
+          return;
+        }
+
+        if (state) {
+          el.textContent = 'Looks right ✅';
+          el.classList.add('correct');
+        } else {
+          el.textContent = 'Not quite. Try again. ❌';
+          el.classList.add('incorrect');
+        }
+      }
+      
+      function countCorrect() {
+        let correct = 0;
+
+        [1, 2, 3].forEach(function (id) {
+          const val = fields[id - 1].value || '';
+          if (answers[id](val)) correct++;
+        });
+
+        return correct;
+      }
+
+      function checkAll() {
+        let allCorrect = true;
+
+        [1, 2, 3].forEach(function (id) {
+          const val = fields[id - 1].value || '';
+          const ok = answers[id](val);
+          if (!ok) allCorrect = false;
+          setStatus(id, ok);
+        });
+        
+        document.getElementById('progress-chip').textContent = `Clues solved: ${countCorrect()} / 3`;
+
+        if (allCorrect) {
+          unlockBtn.disabled = false;
+          unlockHint.textContent = 'Access granted. Click to enter the birthday page.';
+        } else {
+          unlockBtn.disabled = true;
+          unlockHint.textContent = 'Solve all three clues. Green = correct, red = try again.';
+        }
+      }
+
+      fields.forEach(function (input) {
+        input.addEventListener('input', checkAll);
+      });
+
+      unlockBtn.addEventListener('click', function () {
+        if (unlockBtn.disabled) return;
+        window.location.href = 'birthday.html';
+      });
+    })();
+  </script>
+</body>
+</html>

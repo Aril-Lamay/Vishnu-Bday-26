@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Entry 🎀</title>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --font-display: 'Cabinet Grotesk', 'Trebuchet MS', system-ui, sans-serif;
+      --font-body: 'Satoshi', 'Segoe UI', system-ui, sans-serif;
+
+      --bg: #ffeef8;
+      --bg-blob-pink: #ffb4d9;
+      --bg-blob-yellow: #ffe28a;
+      --bg-blob-teal: #a4e1e6;
+
+      --window-bg: #fffdfd;
+      --window-border: #ffd0ea;
+      --window-shadow: 0 18px 40px rgba(255, 140, 190, 0.35);
+
+      --accent-pink: #ff7fb5;
+      --accent-pink-soft: #ffd5ea;
+      --accent-lilac: #c2b4ff;
+      --accent-teal: #57cdd6;
+      --accent-text-dark: #43213e;
+      --accent-text-soft: #7f5c78;
+
+      --radius-window: 2rem;
+      --radius-pill: 999px;
+
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      -webkit-text-size-adjust: none;
+      text-size-adjust: none;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: var(--space-8) var(--space-4);
+      font-family: var(--font-body);
+      color: var(--accent-text-dark);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255,180,217,0.7), transparent 55%),
+        radial-gradient(circle at 90% 10%, rgba(255,226,138,0.75), transparent 55%),
+        radial-gradient(circle at 10% 100%, rgba(164,225,230,0.75), transparent 55%),
+        var(--bg);
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: var(--space-6) var(--space-3);
+      }
+    }
+
+    /* Doodles */
+    .doodle {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0.55;
+      z-index: 0;
+    }
+    .doodle-star {
+      width: 52px;
+      height: 52px;
+      top: 8%;
+      left: 6%;
+      background: radial-gradient(circle, #ffe28a 40%, #ffaf3c 100%);
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+    .doodle-cloud {
+      width: 120px;
+      height: 60px;
+      bottom: 8%;
+      right: 8%;
+      background: #ffffff;
+      border-radius: 40px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .entry-shell {
+      width: min(420px, 100%);
+      position: relative;
+      z-index: 1;
+    }
+
+    .window {
+      background: var(--window-bg);
+      border-radius: var(--radius-window);
+      border: 2px solid var(--window-border);
+      box-shadow: var(--window-shadow);
+      padding: var(--space-6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .window::after {
+      content: "";
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.9), transparent 60%);
+      right: -40px;
+      bottom: -40px;
+      opacity: 0.8;
+    }
+
+    .window-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-5);
+    }
+
+    .window-dots {
+      display: inline-flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+    .window-dot {
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 50%;
+    }
+    .window-dot.red { background: #ff7380; }
+    .window-dot.yellow { background: #ffc45f; }
+    .window-dot.green { background: #6edc8d; }
+
+    .window-title {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-text-soft);
+    }
+
+    .tab-pill {
+      padding: 0.35rem 0.9rem;
+      border-radius: var(--radius-pill);
+      background: var(--accent-lilac);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .entry-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--radius-pill);
+      background: var(--accent-pink-soft);
+      color: var(--accent-pink);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: var(--space-3);
+    }
+
+    .entry-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      line-height: 1.1;
+      margin-bottom: var(--space-2);
+    }
+
+    .entry-subtitle {
+      font-size: 0.9rem;
+      color: var(--accent-text-soft);
+      margin-bottom: var(--space-5);
+    }
+
+    .entry-form {
+      display: grid;
+      gap: var(--space-4);
+    }
+
+    .field {
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .field-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+
+    .field label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-text-soft);
+      font-weight: 700;
+    }
+
+    .field-hint {
+      font-size: 0.7rem;
+      color: #b2789f;
+    }
+
+    .field input {
+      border-radius: 1rem;
+      border: 1.5px solid #ffd7f4;
+      padding: 0.7rem 0.9rem;
+      background: #fff8fd;
+      color: var(--accent-text-dark);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    .field input::placeholder {
+      color: #c9a7c6;
+    }
+
+    .field input:focus-visible {
+      border-color: var(--accent-pink);
+      background: #fff;
+      box-shadow: 0 0 0 2px rgba(255,127,181,0.25);
+    }
+
+    .btn {
+      border-radius: 1.2rem;
+      border: none;
+      cursor: pointer;
+      padding: 0.75rem 1.2rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      width: 100%;
+      background: linear-gradient(135deg, #ff7fb5, #ffaf3c);
+      color: #ffffff;
+      box-shadow: 0 10px 22px rgba(255,127,181,0.45);
+      transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.03);
+      box-shadow: 0 14px 26px rgba(255,127,181,0.55);
+    }
+
+    .entry-hint {
+      font-size: 0.75rem;
+      color: var(--accent-text-soft);
+      margin-top: var(--space-3);
+      text-align: center;
+    }
+
+    .entry-error {
+      margin-top: var(--space-3);
+      font-size: 0.75rem;
+      color: #b3261e;
+      background: rgba(179,38,30,0.06);
+      padding: 0.55rem 0.75rem;
+      border-radius: var(--radius-pill);
+      text-align: center;
+      border: 1px solid rgba(179,38,30,0.2);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="doodle doodle-star"></div>
+  <div class="doodle doodle-cloud"></div>
+
+  <main class="entry-shell">
+    <section class="window" aria-label="Birthday entry window">
+      <header class="window-header">
+        <div class="window-dots" aria-hidden="true">
+          <span class="window-dot red"></span>
+          <span class="window-dot yellow"></span>
+          <span class="window-dot green"></span>
+        </div>
+        <div class="window-title">login-to-birthday.world</div>
+        <span class="tab-pill">Entry</span>
+      </header>
+
+      <div class="entry-chip">
+        🔒 Private birthday portal
+      </div>
+      <h1 class="entry-title">Who’s sneaking into this surprise?</h1>
+      <p class="entry-subtitle">
+        Type the special name and little secret phrase to unlock
+        the cutest birthday page on your screen.
+      </p>
+
+      <form id="entry-form" class="entry-form" autocomplete="off" novalidate>
+        <div class="field">
+          <div class="field-label-row">
+            <label for="entry-username">Username</label>
+            <span class="field-hint">Hint: Vishnu (any case)</span>
+          </div>
+          <input
+            id="entry-username"
+            name="username"
+            type="text"
+            placeholder="Type the magic name..."
+            required
+          />
+        </div>
+
+        <div class="field">
+          <div class="field-label-row">
+            <label for="entry-password">Password</label>
+            <span class="field-hint">Hint: Number that I tell you to recite to me all the time</span>
+          </div>
+          <input
+            id="entry-password"
+            name="password"
+            type="password"
+            placeholder="Type the secret phrase..."
+            required
+          />
+        </div>
+
+        <button class="btn" type="submit">
+          Enter birthday world ✨
+        </button>
+
+        <p class="entry-hint">
+          Username is not case sensitive. Password has to match exactly.
+        </p>
+        <p class="entry-error" id="entry-error">
+          Oops, that combo doesn’t match. Try again, birthday detective.
+        </p>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const form = document.getElementById('entry-form');
+      const errorBox = document.getElementById('entry-error');
+
+      const VALID_USERNAME = 'vishnu';
+      const VALID_PASSWORD = '7319882707';
+
+      if (!form) return;
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const usernameInput = document.getElementById('entry-username');
+        const passwordInput = document.getElementById('entry-password');
+
+        const username = (usernameInput.value || '').trim().toLowerCase();
+        const password = (passwordInput.value || '').trim();
+
+        const isUsernameValid = username === VALID_USERNAME;
+        const isPasswordValid = password === VALID_PASSWORD;
+
+        if (isUsernameValid && isPasswordValid) {
+          errorBox.style.display = 'none';
+          window.location.href = 'mystery.html';
+        } else {
+          errorBox.style.display = 'block';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
